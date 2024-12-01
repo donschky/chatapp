@@ -33,10 +33,10 @@ const io = new Server(expressServer, {
 })
 
 io.on('connection', socket => {
-    console.log(`User ${socket.id} connected`)
+    console.log(`User ${socket.id} is connected`)
 
     // Upon connection - only to user 
-    socket.emit('message', buildMsg(ADMIN, "Welcome to Chat App!"))
+    socket.emit('message', buildMsg(ADMIN, "Welcome to Chat Chat!"))
 
     socket.on('enterRoom', ({ name, room }) => {
 
@@ -45,7 +45,7 @@ io.on('connection', socket => {
 
         if (prevRoom) {
             socket.leave(prevRoom)
-            io.to(prevRoom).emit('message', buildMsg(ADMIN, `${name} has left the room`))
+            io.to(prevRoom).emit('message', buildMsg(ADMIN, `${name} has left`))
         }
 
         const user = activateUser(socket.id, name, room)
@@ -61,10 +61,10 @@ io.on('connection', socket => {
         socket.join(user.room)
 
         // To user who joined 
-        socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`))
+        socket.emit('message', buildMsg(ADMIN, `You have joined '${user.room}' chat room`))
 
         // To everyone else 
-        socket.broadcast.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`))
+        socket.broadcast.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined`))
 
         // Update user list for room 
         io.to(user.room).emit('userList', {
